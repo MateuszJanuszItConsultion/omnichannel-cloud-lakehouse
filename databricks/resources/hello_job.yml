@@ -1,0 +1,9 @@
+resources:
+  jobs:
+    hello_omnichannel_job:
+      name: hello-omnichannel-job
+      tasks:
+        - task_key: run_hello
+          notebook_task:
+            notebook_path: ../src/notebooks/hello.py
+            source: WORKSPACE

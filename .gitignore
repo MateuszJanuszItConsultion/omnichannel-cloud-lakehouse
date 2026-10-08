@@ -1,10 +1,26 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
+*.py[cod]
 *$py.class
+.venv/
+uv.lock
+.python-version
 
-# C extensions
-*.so
+# --- Databricks Asset Bundles (DABs) ---
+.databricks/
+target/
+
+# Dev Tools
+.ruff_cache/
+.pytest_cache/
+.sqlfluff_cache
+
+# --- IDE & OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
 
 # Distribution / packaging
 .Python
