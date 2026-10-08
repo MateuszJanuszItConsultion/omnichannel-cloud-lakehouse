@@ -1,0 +1,49 @@
+[project]
+name = "omnichannel-cloud-lakehouse"
+version = "0.1.0"
+description = "Omnichannel retail data platform built with Databricks, PySpark, dbt, and Terraform"
+readme = "README.md"
+authors = [
+    { name = "Mateusz Janusz", email = "januszmateusz@gmail.com" }
+]
+requires-python = ">=3.12, <3.13"
+dependencies = [
+    "pyspark>=4.2.0,<4.3.0",
+]
+
+[project.scripts]
+omnichannel-cloud-lakehouse = "omnichannel_cloud_lakehouse:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.6.2",
+    "pytest>=9.1.1",
+    "ruff>=0.16.10",
+    "sqlfluff>=4.4.0",
+]
+
+[tool.uv]
+package = false
+default-groups = ["dev"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+builtins = ["spark", "dbutils", "display"]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "UP", # pyupgrade
+]
+ignore = []
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
