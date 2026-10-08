@@ -1,0 +1,33 @@
+default_stages: [pre-commit]
+
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff (ingestion + databricks)
+        entry: uv run ruff check --fix
+        language: system
+        files: ^(pipelines|databricks|src|tests)/.*\.py$
+
+      - id: sqlfluff-lint
+        name: sqlfluff lint (dbt models)
+        entry: uv run python scripts/run_sqlfluff.py
+        language: system
+        files: ^dbt_project/models/.*\.sql$
+        pass_filenames: false
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: [feat, fix, refactor, chore, docs, test]
+
+  - repo: local
+    hooks:
+      - id: terraform-fmt
+        name: terraform fmt
+        entry: uv run terraform fmt -recursive infra/terraform
+        language: system
+        pass_filenames: false
+        files: \.tf$
