@@ -1,0 +1,19 @@
+resources:
+  jobs:
+    healthcheck:
+      name: healthcheck
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "5"
+            dependencies:
+              # Relative to THIS file, not to databricks.yml.
+              - ../dist/*.whl
+      tasks:
+        - task_key: healthcheck
+          environment_key: default
+          python_wheel_task:
+            package_name: omnichannel_cloud_lakehouse
+            entry_point: healthcheck
+            named_parameters:
+              catalog: ${var.catalog}
