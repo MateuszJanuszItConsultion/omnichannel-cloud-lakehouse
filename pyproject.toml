@@ -23,12 +23,12 @@ dev = [
 ]
 # Classic local Spark (tests, local performance lens).
 local-spark = [
-    "pyspark>=4.2.0,<4.3.0",
+    "pyspark>=4.1.0,<4.2.0",
 ]
 # Spark Connect to Databricks serverless. Version must match the serverless
 # environment version pinned in the bundle (pending verification, ADR-0001).
 databricks = [
-    "databricks-connect>=17.3,<17.4",
+    "databricks-connect>=18.1,<18.2",
 ]
 
 [tool.uv]
@@ -58,3 +58,6 @@ select = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[project.scripts]
+healthcheck = "omnichannel_cloud_lakehouse.jobs.healthcheck:main"
