@@ -31,6 +31,12 @@ repos:
         language: system
         pass_filenames: false
         files: \.tf$
+      - id: uv-lock-check
+        name: uv lock --check
+        entry: uv lock --check
+        language: system
+        pass_filenames: false
+        files: ^(pyproject\.toml|uv\.lock)$
 
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v4.4.0
