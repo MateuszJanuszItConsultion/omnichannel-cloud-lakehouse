@@ -37,3 +37,4 @@ def main() -> None:
     print(f"spark_server={spark.version}")
     print(f"catalog_param={args.catalog}")
     print(f"spark_range_count={spark.range(10).count()}")
+    print(f"faker={_pkg_version('faker')}")
