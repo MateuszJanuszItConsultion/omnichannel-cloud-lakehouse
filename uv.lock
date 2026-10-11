@@ -351,7 +351,7 @@ local-spark = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "faker", specifier = ">=40.43.0" }]
+requires-dist = [{ name = "faker", specifier = "==40.43.0" }]
 
 [package.metadata.requires-dev]
 databricks = [{ name = "databricks-connect", specifier = ">=18.1,<18.2" }]
