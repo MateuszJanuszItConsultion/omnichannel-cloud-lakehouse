@@ -1,7 +1,7 @@
 locals {
   # Start with one schema to verify that the API can create schemas inside
   # SQL-created catalogs. Extend the list once the hypothesis is confirmed.
-  schemas = toset(["bronze"])
+  schemas = toset(["landing", "bronze", "silver", "gold", "eval", "truth"])
 
   catalog_schemas = {
     for pair in setproduct(local.environments, local.schemas) :
