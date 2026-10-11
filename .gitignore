@@ -29,6 +29,7 @@ dbt/logs/
 *.tfvars
 !*.tfvars.example
 crash.log
+**/backend.hcl
 
 # --- Local Spark (classic mode) ---
 spark-warehouse/
