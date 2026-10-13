@@ -55,3 +55,7 @@ def pick(
     idx = F.floor(uniform(*key_cols, seed=seed, stream=stream) * pool.size).cast("int")
     lookup = pool.df.withColumnRenamed("idx", "_pool_idx").withColumnRenamed("value", alias)
     return df.withColumn("_pool_idx", idx).join(F.broadcast(lookup), "_pool_idx").drop("_pool_idx")
+
+
+def build_all_pools(spark: SparkSession, seed: int, draws: int) -> dict[str, Pool]:
+    return {kind: build_pool(spark, kind, seed, draws) for kind in _DRAWS}
