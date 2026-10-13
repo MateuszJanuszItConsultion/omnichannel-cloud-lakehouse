@@ -1,5 +1,13 @@
+import os
+import sys
+
 import pytest
 from pyspark.sql import SparkSession
+
+# Classic PySpark starts Python worker processes with the `python` command.
+# On Windows that resolves to the Microsoft Store alias, not the venv.
+os.environ.setdefault("PYSPARK_PYTHON", sys.executable)
+os.environ.setdefault("PYSPARK_DRIVER_PYTHON", sys.executable)
 
 
 @pytest.fixture(scope="session")
