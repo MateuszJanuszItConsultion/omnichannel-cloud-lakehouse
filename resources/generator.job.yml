@@ -1,0 +1,19 @@
+resources:
+  jobs:
+    generator_bootstrap:
+      name: generator_bootstrap
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "5"
+            dependencies:
+              - ../dist/*.whl
+      tasks:
+        - task_key: bootstrap
+          environment_key: default
+          python_wheel_task:
+            package_name: omnichannel_cloud_lakehouse
+            entry_point: generate
+            named_parameters:
+              catalog: ${var.catalog}
+              mode: bootstrap
