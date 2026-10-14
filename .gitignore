@@ -50,3 +50,6 @@ derby.log
 .idea/
 .DS_Store
 Thumbs.db
+
+# --- Scratch files ---
+scratch/
