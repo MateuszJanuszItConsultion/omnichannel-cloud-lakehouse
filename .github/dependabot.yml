@@ -1,0 +1,42 @@
+version: 2
+
+updates:
+  # GitHub Actions run with the repository token: keeping them current matters most.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "chore"
+
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 7
+    ignore:
+      # Pinned to the serverless environment 5 client (ADR-0001).
+      # Changed only together with the environment version, never on its own.
+      - dependency-name: "pyspark"
+      - dependency-name: "databricks-connect"
+      # A new Faker version changes generated values (ADR-0014).
+      # Upgraded deliberately, together with regenerating the truth.
+      - dependency-name: "faker"
+    groups:
+      python-dev-tools:
+        patterns: ["pytest", "ruff", "pre-commit"]
+    commit-message:
+      prefix: "chore"
+
+  - package-ecosystem: "terraform"
+    directory: "/infra/terraform"
+    schedule:
+      interval: "monthly"
+    commit-message:
+      prefix: "chore"
