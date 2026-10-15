@@ -15,6 +15,7 @@ class GeneratorConfig:
     day_zero: date = date(2026, 1, 1)
     history_days: int = 365
     loyalty_member_share: float = 0.35
+    webshop_account_share: float = 0.55
     pool_draws: int = 5_000
     # Probability of a household of size 1, 2, 3, 4 (index + 1).
     household_size_probs: tuple[float, ...] = (0.35, 0.30, 0.20, 0.15)
@@ -27,6 +28,8 @@ class GeneratorConfig:
             raise ValueError("history_days must not be negative")
         if not 0.0 <= self.loyalty_member_share <= 1.0:
             raise ValueError("loyalty_member_share must be within [0, 1]")
+        if not 0.0 <= self.webshop_account_share <= 1.0:
+            raise ValueError("webshop_account_share must be within [0, 1]")
         if abs(sum(self.household_size_probs) - 1.0) > 1e-9:
             raise ValueError("household_size_probs must sum to 1")
 
