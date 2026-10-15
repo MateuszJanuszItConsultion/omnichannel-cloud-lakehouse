@@ -17,3 +17,4 @@ resources:
             named_parameters:
               catalog: ${var.catalog}
               mode: bootstrap
+              git_commit: ${bundle.git.commit}

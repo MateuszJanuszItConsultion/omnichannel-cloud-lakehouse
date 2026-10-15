@@ -32,10 +32,18 @@ def ensure_bootstrap_allowed(sim_day: date | None, day_zero: date) -> None:
         )
 
 
-def write_bootstrap(spark: SparkSession, catalog: str, population: DataFrame, day_zero: date) -> None:
-    # Person first, clock last: the clock works as a commit marker. If the person
-    # write fails, the clock is unchanged and the job can simply be re-run.
-    population.write.mode("overwrite").option("overwriteSchema", "true").saveAsTable(table(catalog, "person"))
-    spark.createDataFrame([(day_zero,)], "sim_day date").write.mode("overwrite").saveAsTable(
-        table(catalog, "sim_clock")
-    )
+def _overwrite(df: DataFrame, name: str) -> None:
+    df.write.mode("overwrite").option("overwriteSchema", "true").saveAsTable(name)
+
+
+def write_person(catalog: str, population: DataFrame) -> None:
+    _overwrite(population, table(catalog, "person"))
+
+
+def write_source_records(catalog: str, records: DataFrame) -> None:
+    _overwrite(records, table(catalog, "source_record"))
+
+
+def write_clock(spark: SparkSession, catalog: str, sim_day: date) -> None:
+    """Written last in every run: the clock works as a commit marker across tables and files."""
+    _overwrite(spark.createDataFrame([(sim_day,)], "sim_day date"), table(catalog, "sim_clock"))
