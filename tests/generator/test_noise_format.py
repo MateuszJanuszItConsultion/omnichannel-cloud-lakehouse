@@ -64,3 +64,10 @@ def test_street_prefix(spark, variant, expected):
         .first()
     )
     assert row[0] == expected
+
+
+def test_phone_variants_keep_null(spark):
+    df = spark.range(nf.PHONE_VARIANT_COUNT).select(
+        nf.phone_variant(F.lit(None).cast("string"), F.col("id").cast("int")).alias("p")
+    )
+    assert df.where(F.col("p").isNotNull()).count() == 0

@@ -39,17 +39,19 @@ def postal_code_without_dash(col: Column) -> Column:
 
 def _phone_variants(col: Column) -> list[Column]:
     # Truth phones are '+48' followed by 9 national digits.
+    # concat (not concat_ws): a missing phone must stay missing in every variant.
     n = F.substring(col, 4, 9)
     a, b, c = F.substring(n, 1, 3), F.substring(n, 4, 3), F.substring(n, 7, 3)
+    sp, dash = F.lit(" "), F.lit("-")
     return [
         n,  # 600123456
         F.concat(F.lit("+48"), n),  # +48600123456
         F.concat(F.lit("48"), n),  # 48600123456
         F.concat(F.lit("0048"), n),  # 0048600123456
         F.concat(F.lit("(0) "), n),  # (0) 600123456
-        F.concat_ws(" ", a, b, c),  # 600 123 456
-        F.concat_ws("-", a, b, c),  # 600-123-456
-        F.concat_ws(" ", F.lit("+48"), a, b, c),  # +48 600 123 456
+        F.concat(a, sp, b, sp, c),  # 600 123 456
+        F.concat(a, dash, b, dash, c),  # 600-123-456
+        F.concat(F.lit("+48 "), a, sp, b, sp, c),  # +48 600 123 456
     ]
 
 

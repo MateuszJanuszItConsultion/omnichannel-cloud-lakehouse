@@ -71,3 +71,14 @@ def test_filter_on_noise_keeps_plan_small(records):
     plan_chars = len(filtered._jdf.queryExecution().optimizedPlan().toString())
     print(f"plan_chars={plan_chars}")
     assert plan_chars < 2_000_000
+
+
+def test_missing_values_stay_missing(spark):
+    df = spark.createDataFrame(
+        [("x", "Jan", "Nowak", None, None, None, None)],
+        "source_record_id string, first_name string, last_name string, street string, "
+        "city string, postal_code string, phone string",
+    )
+    full = NoiseProfile(**{f.name: 1.0 for f in fields(NoiseProfile)} | {"lower_case": 0.0})
+    out = apply_noise(df, full, seed=42).first()
+    assert (out.street, out.city, out.postal_code, out.phone) == (None, None, None, None)
