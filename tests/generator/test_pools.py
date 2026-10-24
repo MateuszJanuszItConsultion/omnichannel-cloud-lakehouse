@@ -34,3 +34,10 @@ def test_pick_is_deterministic(spark):
     b = pick(people.repartition(5), pool, "person_id", seed=42, stream="fn", alias="v")
 
     assert a.orderBy("person_id").collect() == b.orderBy("person_id").collect()
+
+
+def test_pool_plan_does_not_read_python_data(spark):
+    """Regression guard: pools built from Python lists cost ~0.5 s per read locally."""
+    pool = build_pool(spark, "city", seed=42, draws=300)
+    plan = pool.df._jdf.queryExecution().optimizedPlan().toString()
+    assert "LogicalRDD" not in plan
