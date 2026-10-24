@@ -12,8 +12,12 @@ NOISY = ["first_name", "last_name", "street", "city", "postal_code", "phone"]
 
 @pytest.fixture
 def records(spark):
-    rows = [(i, *ROW[1:]) for i in range(5_000)]
-    return spark.createDataFrame(rows, SCHEMA).withColumn("source_record_id", F.concat(F.lit("r"), "id"))
+    # Built from range + literals: no Python worker per action (see test_pools regression guard).
+    return spark.range(5_000).select(
+        F.col("id"),
+        *[F.lit(v).alias(name) for name, v in zip(NOISY, ROW[1:], strict=True)],
+        F.concat(F.lit("r"), F.col("id").cast("string")).alias("source_record_id"),
+    )
 
 
 def test_zero_profile_changes_nothing(records):
