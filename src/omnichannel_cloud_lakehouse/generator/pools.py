@@ -33,14 +33,25 @@ class Pool:
     size: int  # known on the driver, so sampling needs no Spark action
 
 
+def _literal_frame(spark: SparkSession, values: list[str]) -> DataFrame:
+    """Small reference data as a plan of literals: no Python worker ever reads it.
+
+    spark.createDataFrame(list) would be read through a Python worker on every
+    action in classic PySpark (slow on Windows, where workers are not reused).
+    """
+    if not values:
+        raise ValueError("a pool needs at least one value")
+    rows = [F.struct(F.lit(i).cast("int").alias("idx"), F.lit(v).alias("value")) for i, v in enumerate(values)]
+    return spark.range(1).select(F.inline(F.array(*rows)))
+
+
 def build_pool(spark: SparkSession, kind: str, seed: int, draws: int) -> Pool:
     fake = Faker("pl_PL")
     # Seeding per kind makes each pool independent of build order.
     fake.seed_instance(f"{seed}:{kind}")
     # dict.fromkeys removes duplicates and keeps first-seen order (deterministic).
     values = list(dict.fromkeys(_DRAWS[kind](fake) for _ in range(draws)))
-    df = spark.createDataFrame(list(enumerate(values)), "idx int, value string")
-    return Pool(df=df, size=len(values))
+    return Pool(df=_literal_frame(spark, values), size=len(values))
 
 
 def pick(
