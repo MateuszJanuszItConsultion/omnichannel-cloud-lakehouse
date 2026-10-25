@@ -74,7 +74,7 @@ def test_filter_on_noise_keeps_plan_small(records):
     filtered = apply_noise(records, PROFILES["pos"], seed=42).where(F.size("noise") > 0)
     plan_chars = len(filtered._jdf.queryExecution().optimizedPlan().toString())
     print(f"plan_chars={plan_chars}")
-    assert plan_chars < 2_000_000
+    assert plan_chars < 310_000
 
 
 def test_missing_values_stay_missing(spark):
