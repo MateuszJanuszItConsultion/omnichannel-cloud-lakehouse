@@ -3,6 +3,7 @@
 from datetime import date
 
 from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import functions as F
 
 
 def table(catalog: str, name: str) -> str:
@@ -44,6 +45,11 @@ def write_source_records(catalog: str, records: DataFrame) -> None:
     _overwrite(records, table(catalog, "source_record"))
 
 
+def clock_frame(spark: SparkSession, sim_day: date) -> DataFrame:
+    """One-row clock built from a literal: no Python worker reads it (ADR-0009)."""
+    return spark.range(1).select(F.lit(sim_day).alias("sim_day"))
+
+
 def write_clock(spark: SparkSession, catalog: str, sim_day: date) -> None:
     """Written last in every run: the clock works as a commit marker across tables and files."""
-    _overwrite(spark.createDataFrame([(sim_day,)], "sim_day date"), table(catalog, "sim_clock"))
+    _overwrite(clock_frame(spark, sim_day), table(catalog, "sim_clock"))
